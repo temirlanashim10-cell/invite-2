@@ -1,0 +1,415 @@
+/* Общий фон страницы */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #2b103b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #ffffff 0%, #f3e9ff 35%, #e3d5ff 70%, #cbb3ff 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.9) 0, transparent 60%),
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.8) 0, transparent 55%),
+    radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.7) 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(248, 238, 255, 0.85) 0, transparent 60%);
+  opacity: 0.9;
+  z-index: -2;
+}
+
+.heart-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.invite-wrapper {
+  width: 100%;
+  max-width: 960px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.invite-card {
+  width: 100%;
+  max-width: 720px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 24px 60px rgba(58, 8, 98, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+  gap: 32px;
+  padding: 32px 36px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  animation: cardFadeIn 1.1s ease-out forwards;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+}
+
+.invite-card::before {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(200, 141, 255, 0.55), transparent 70%);
+  top: -60px;
+  right: -60px;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.invite-card::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255, 174, 214, 0.6), transparent 70%);
+  bottom: -40px;
+  left: -40px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.photo-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.photo-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(255, 192, 231, 0.85), rgba(163, 122, 255, 0.9));
+  filter: blur(12px);
+  opacity: 0.9;
+  z-index: -1;
+}
+
+.photo {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow:
+    0 18px 40px rgba(89, 41, 143, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.85);
+  transform-origin: center;
+  animation: softFloat 6s ease-in-out infinite;
+}
+
+.invite-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.invite-title {
+  margin: 0;
+  font-size: clamp(1.9rem, 2.4vw + 1rem, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: #3d1459;
+  animation: fadeTextIn 1.2s ease-out forwards;
+  opacity: 0;
+}
+
+.invite-title-accepted {
+  animation: titleAccepted 0.7s ease-out forwards;
+}
+
+.invite-subtitle {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #6a4a8f;
+  animation: fadeTextIn 1.4s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.1s;
+}
+
+.invite-subtitle-accepted {
+  animation: titleAccepted 0.8s ease-out forwards;
+}
+
+.buttons-row {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  position: relative;
+}
+
+.btn {
+  position: relative;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    background 0.22s ease-out,
+    color 0.22s ease-out,
+    opacity 0.25s ease-out;
+  box-shadow: 0 14px 30px rgba(84, 26, 129, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transform-origin: center;
+  animation: fadeTextIn 1.5s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.18s;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 20px 40px rgba(84, 26, 129, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.9);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 10px 20px rgba(84, 26, 129, 0.2);
+}
+
+.btn-yes {
+  background: linear-gradient(135deg, #ff7ac3, #ff8ad7, #c37bff);
+  color: #ffffff;
+}
+
+.btn-yes-bigger {
+  padding: 18px 34px;
+}
+
+.btn-no {
+  background: rgba(255, 255, 255, 0.9);
+  color: #7c4bab;
+  box-shadow: 0 10px 24px rgba(90, 37, 137, 0.18);
+}
+
+.btn-no:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.btn-disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.btn-no-smaller {
+  padding: 8px 20px;
+  font-size: 0.9rem;
+}
+
+body.accepted {
+  background: radial-gradient(circle at top, #ffe6ff 0%, #f5d2ff 30%, #e0b5ff 60%, #b38bff 100%);
+}
+
+.accepted-wrapper {
+  animation: pulseWrapper 3.6s ease-in-out infinite;
+}
+
+.accepted-card {
+  animation: cardGlow 2.5s ease-in-out infinite;
+}
+
+.falling-heart {
+  position: fixed;
+  top: -40px;
+  font-size: 18px;
+  color: #ff6fb5;
+  opacity: 0;
+  pointer-events: none;
+  animation-name: fallHeart;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
+
+@keyframes cardFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeTextIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softFloat {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fallHeart {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(45vh) translateX(-12px) rotate(15deg);
+  }
+  100% {
+    transform: translateY(100vh) translateX(10px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseWrapper {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+}
+
+@keyframes cardGlow {
+  0%,
+  100% {
+    box-shadow:
+      0 24px 60px rgba(70, 8, 120, 0.26),
+      0 0 0 1px rgba(255, 255, 255, 0.9);
+  }
+  50% {
+    box-shadow:
+      0 30px 70px rgba(121, 26, 163, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 1);
+  }
+}
+
+@keyframes titleAccepted {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .invite-card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 24px 20px 26px;
+    gap: 20px;
+  }
+
+  .photo-wrapper {
+    order: -1;
+  }
+
+  .photo {
+    max-width: 260px;
+  }
+
+  .invite-wrapper {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    align-items: stretch;
+  }
+
+  .invite-wrapper {
+    padding: 16px 14px;
+  }
+
+  .invite-card {
+    border-radius: 22px;
+  }
+
+  .invite-title {
+    font-size: 1.7rem;
+  }
+
+  .buttons-row {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.explosion-heart {
+  position: fixed;
+  font-size: 24px;
+  color: #ff2e88;
+  animation: explode 1.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), 
+                         calc(-50% + var(--y))) 
+               scale(0.5);
+  }
+}

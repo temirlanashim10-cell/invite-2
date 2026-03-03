@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Приглашение на свидание</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="heart-background"></div>
+
+  <main class="invite-wrapper">
+    <section class="invite-card">
+      <div class="photo-wrapper">
+        <!-- Замените src на свою фотографию -->
+        <img
+          src="https://images.pexels.com/photos/1028725/pexels-photo-1028725.jpeg"
+          alt="Наша фотография"
+          class="photo"
+        >
+      </div>
+
+      <div class="invite-content">
+        <h1 class="invite-title">Сен менімен ерекше кешке барасың ба?</h1>
+        <p class="invite-subtitle">
+          Мен өте ерекше кеш дайындадым тек сен үшін ғана </p>
+
+        <div class="buttons-row">
+          <button class="btn btn-yes" id="yesButton">Иә ❤️</button>
+          <button class="btn btn-no" id="noButton">Жоқ 🙈</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const yesButton = document.getElementById('yesButton');
+      const noButton = document.getElementById('noButton');
+      const title = document.querySelector('.invite-title');
+      const subtitle = document.querySelector('.invite-subtitle');
+      const card = document.querySelector('.invite-card');
+      const wrapper = document.querySelector('.invite-wrapper');
+
+      const maxNoClicks = 5;
+      let noClickCount = 0;
+
+
+      function createHeart() {
+        const heart = document.createElement('span');
+        heart.classList.add('falling-heart');
+        heart.textContent = '❤';
+
+        const startLeft = Math.random() * 100;
+        const duration = 6 + Math.random() * 4;
+        const delay = Math.random() * 3;
+        const scale = 0.7 + Math.random() * 0.8;
+
+        heart.style.left = startLeft + 'vw';
+        heart.style.animationDuration = duration + 's';
+        heart.style.animationDelay = delay + 's';
+        heart.style.transform = 'scale(' + scale + ')';
+
+        document.body.appendChild(heart);
+
+        heart.addEventListener('animationend', function () {
+          heart.remove();
+        });
+      }
+
+      function explodeHearts() {
+  const explosionCount = 40;
+
+  for (let i = 0; i < explosionCount; i++) {
+    const heart = document.createElement('span');
+    heart.textContent = "❤";
+    heart.classList.add('explosion-heart');
+
+    heart.style.position = "fixed";
+    heart.style.left = "50%";
+    heart.style.top = "50%";
+
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = 120 + Math.random() * 200;
+
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+
+    heart.style.setProperty('--x', x + 'px');
+    heart.style.setProperty('--y', y + 'px');
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 1500);
+  }
+}
+
+      for (let i = 0; i < 25; i++) {
+        setTimeout(createHeart, i * 250);
+      }
+
+      setInterval(createHeart, 1500);
+
+      yesButton.addEventListener('click', function () {
+
+// Меняем фон страницы
+document.body.style.background = 
+  "linear-gradient(135deg, #ff758c, #ff7eb3, #ffd1ff)";
+document.body.style.transition = "1s ease";
+
+// Меняем текст
+title.textContent = "Мен сенің келісетініңді білгенмін 😍";
+subtitle.textContent = "Ендеше ең қызықты кешке дайындал 💫";
+
+// Прячем кнопку "Нет"
+noButton.style.display = "none";
+
+// Добавим эффект увеличения карточки
+card.style.transform = "scale(1.1)";
+card.style.transition = "0.6s ease";
+
+explodeHearts();
+
+setTimeout(() => {
+    setInterval(createHeart, 300);
+  }, 800);
+
+// Немного конфетти-сердец
+for (let i = 0; i < 15; i++) {
+  setTimeout(createHeart, i * 100);
+}
+});
+
+      function reactToNoClick() {
+        if (noClickCount >= maxNoClicks) {
+          return;
+        }
+
+        noClickCount += 1;
+
+        const baseYesPaddingY = 12;
+        const baseYesPaddingX = 28;
+        const baseNoPaddingY = 12;
+        const baseNoPaddingX = 28;
+
+        // каждый раз "Да" увеличивается на 6px по вертикали и горизонтали
+        const yesPaddingY = baseYesPaddingY + 6 * noClickCount;
+        const yesPaddingX = baseYesPaddingX + 6 * noClickCount;
+        yesButton.style.padding = yesPaddingY + 'px ' + yesPaddingX + 'px';
+
+        // "Нет" каждый раз немного уменьшается
+        const noPaddingY = Math.max(4, baseNoPaddingY - 2 * noClickCount);
+        const noPaddingX = Math.max(14, baseNoPaddingX - 4 * noClickCount);
+        noButton.style.padding = noPaddingY + 'px ' + noPaddingX + 'px';
+      }
+
+      noButton.addEventListener('click', reactToNoClick);
+    });
+  </script>
+</body>
+</html>

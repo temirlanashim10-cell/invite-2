@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Я знал, что ты согласишься</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="accepted">
+  <div class="heart-background"></div>
+
+  <main class="invite-wrapper accepted-wrapper">
+    <section class="invite-card accepted-card">
+      <div class="invite-content">
+        <h1 class="invite-title invite-title-accepted">
+          Я знал, что ты согласишься 😍
+        </h1>
+        <p class="invite-subtitle invite-subtitle-accepted">
+          Обещаю, это свидание ты запомнишь надолго. Спасибо, что делаешь мой мир таким особенным.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function createHeart() {
+        const heart = document.createElement('span');
+        heart.classList.add('falling-heart');
+        heart.textContent = '❤';
+
+        const startLeft = Math.random() * 100;
+        const duration = 6 + Math.random() * 4;
+        const delay = Math.random() * 3;
+        const scale = 0.7 + Math.random() * 0.8;
+
+        heart.style.left = startLeft + 'vw';
+        heart.style.animationDuration = duration + 's';
+        heart.style.animationDelay = delay + 's';
+        heart.style.transform = 'scale(' + scale + ')';
+
+        document.body.appendChild(heart);
+
+        heart.addEventListener('animationend', function () {
+          heart.remove();
+        });
+      }
+
+      for (let i = 0; i < 25; i++) {
+        setTimeout(createHeart, i * 250);
+      }
+
+      setInterval(createHeart, 1500);
+    });
+  </script>
+</body>
+</html>
