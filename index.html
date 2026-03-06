@@ -5,7 +5,175 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Приглашение на свидание</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe0f0, #ff9ec0);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      color: #333;
+    }
+
+    .heart-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .invite-wrapper {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .invite-card {
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 25px 50px rgba(255, 80, 130, 0.35);
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+      text-align: center;
+      padding: 35px 25px;
+      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .photo-wrapper {
+      width: 300px;
+      height: 220px;
+      margin: 0 auto 25px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(185, 72, 108, 0.4);
+      border: 6px solid #fff;
+    }
+
+    .photo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cov;
+      transition: transform 0.6s ease;
+    }
+
+    .invite-content h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+      color: #d63384;
+    }
+
+    .invite-content p {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .buttons-row {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 16px 34px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      white-space: nowrap;
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #ff4d94, #ff85b2);
+      color: white;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .btn-yes:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(255, 77, 148, 0.4);
+    }
+
+    .btn-no {
+      background: #f0f0f0;
+      color: #666;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn-no:hover {
+      background: #e0e0e0;
+    }
+
+    /* Падающие сердечки */
+    .falling-heart {
+      position: fixed;
+      top: -40px;
+      font-size: 28px;
+      color: #ff4d94;
+      z-index: 5;
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(255, 77, 148, 0.6);
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(120vh) rotate(420deg);
+        opacity: 0;
+      }
+    }
+
+    /* Взрыв сердечек при согласии */
+    .explosion-heart {
+      position: fixed;
+      font-size: 32px;
+      color: #ff3366;
+      z-index: 100;
+      pointer-events: none;
+      animation: explode 1.5s ease-out forwards;
+      text-shadow: 0 0 10px rgba(255, 51, 102, 0.8);
+    }
+
+    @keyframes explode {
+      0% {
+        transform: scale(0.3) translate(0, 0);
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.1) translate(var(--x), var(--y));
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="heart-background"></div>
@@ -24,7 +192,8 @@
       <div class="invite-content">
         <h1 class="invite-title">Сен менімен ерекше кешке барасың ба?</h1>
         <p class="invite-subtitle">
-          Мен өте ерекше кеш дайындадым тек сен үшін ғана </p>
+          Мен өте ерекше кеш дайындадым тек сен үшін ғана ❤️
+        </p>
 
         <div class="buttons-row">
           <button class="btn btn-yes" id="yesButton">Иә ❤️</button>
@@ -41,127 +210,132 @@
       const title = document.querySelector('.invite-title');
       const subtitle = document.querySelector('.invite-subtitle');
       const card = document.querySelector('.invite-card');
-      const wrapper = document.querySelector('.invite-wrapper');
 
-      const maxNoClicks = 5;
       let noClickCount = 0;
+      const maxNoClicks = 8;      // сколько раз можно нажать «Жоқ» до полного исчезновения
+      const maxYesScale = 1.85;   // максимальное увеличение кнопки «Иә» (не больше этого)
 
-
+      // Создание падающего сердечка
       function createHeart() {
         const heart = document.createElement('span');
         heart.classList.add('falling-heart');
         heart.textContent = '❤';
 
         const startLeft = Math.random() * 100;
-        const duration = 6 + Math.random() * 4;
-        const delay = Math.random() * 3;
-        const scale = 0.7 + Math.random() * 0.8;
+        const duration = 5.5 + Math.random() * 4;
+        const delay = Math.random() * 2;
+        const scale = 0.75 + Math.random() * 0.9;
 
         heart.style.left = startLeft + 'vw';
         heart.style.animationDuration = duration + 's';
         heart.style.animationDelay = delay + 's';
-        heart.style.transform = 'scale(' + scale + ')';
+        heart.style.transform = `scale(${scale})`;
 
         document.body.appendChild(heart);
 
-        heart.addEventListener('animationend', function () {
-          heart.remove();
-        });
+        heart.addEventListener('animationend', () => heart.remove());
       }
 
+      // Взрыв сердечек при согласии
       function explodeHearts() {
-  const explosionCount = 40;
+        for (let i = 0; i < 45; i++) {
+          const heart = document.createElement('span');
+          heart.textContent = '❤';
+          heart.classList.add('explosion-heart');
 
-  for (let i = 0; i < explosionCount; i++) {
-    const heart = document.createElement('span');
-    heart.textContent = "❤";
-    heart.classList.add('explosion-heart');
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 140 + Math.random() * 220;
+          const x = Math.cos(angle) * distance;
+          const y = Math.sin(angle) * distance - 40;
 
-    heart.style.position = "fixed";
-    heart.style.left = "50%";
-    heart.style.top = "50%";
+          heart.style.left = '50%';
+          heart.style.top = '50%';
+          heart.style.setProperty('--x', `${x}px`);
+          heart.style.setProperty('--y', `${y}px`);
 
-    const angle = Math.random() * 2 * Math.PI;
-    const distance = 120 + Math.random() * 200;
+          document.body.appendChild(heart);
 
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
-
-    heart.style.setProperty('--x', x + 'px');
-    heart.style.setProperty('--y', y + 'px');
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => {
-      heart.remove();
-    }, 1500);
-  }
-}
-
-      for (let i = 0; i < 25; i++) {
-        setTimeout(createHeart, i * 250);
-      }
-
-      setInterval(createHeart, 1500);
-
-      yesButton.addEventListener('click', function () {
-
-// Меняем фон страницы
-document.body.style.background = 
-  "linear-gradient(135deg, #ff758c, #ff7eb3, #ffd1ff)";
-document.body.style.transition = "1s ease";
-
-// Меняем текст
-title.textContent = "Мен сенің келісетініңді білгенмін 😍";
-subtitle.textContent = "Ендеше ең қызықты кешке дайындал 💫";
-
-// Прячем кнопку "Нет"
-noButton.style.display = "none";
-
-// Добавим эффект увеличения карточки
-card.style.transform = "scale(1.1)";
-card.style.transition = "0.6s ease";
-
-explodeHearts();
-
-setTimeout(() => {
-    setInterval(createHeart, 300);
-  }, 800);
-
-// Немного конфетти-сердец
-for (let i = 0; i < 15; i++) {
-  setTimeout(createHeart, i * 100);
-}
-});
-
-      function reactToNoClick() {
-        if (noClickCount >= maxNoClicks) {
-          return;
+          setTimeout(() => heart.remove(), 1600);
         }
-
-        noClickCount += 1;
-
-        const baseYesPaddingY = 12;
-        const baseYesPaddingX = 28;
-        const baseNoPaddingY = 12;
-        const baseNoPaddingX = 28;
-
-        // каждый раз "Да" увеличивается на 6px по вертикали и горизонтали
-        const yesPaddingY = baseYesPaddingY + 6 * noClickCount;
-        const yesPaddingX = baseYesPaddingX + 6 * noClickCount;
-        yesButton.style.padding = yesPaddingY + 'px ' + yesPaddingX + 'px';
-
-        // "Нет" каждый раз немного уменьшается
-        const noPaddingY = Math.max(4, baseNoPaddingY - 2 * noClickCount);
-        const noPaddingX = Math.max(14, baseNoPaddingX - 4 * noClickCount);
-        noButton.style.padding = noPaddingY + 'px ' + noPaddingX + 'px';
       }
 
-      noButton.addEventListener('click', reactToNoClick);
+      // Запуск фоновых сердечек
+      for (let i = 0; i < 28; i++) {
+        setTimeout(createHeart, i * 180);
+      }
+      setInterval(createHeart, 1400);
+
+      // Клик по «Иә»
+      yesButton.addEventListener('click', function () {
+        // Красивый фон
+        document.body.style.background = 'linear-gradient(135deg, #ff758c, #ff7eb3, #ffd1ff)';
+        document.body.style.transition = 'background 1.3s ease';
+
+        // Текст меняется
+        title.textContent = 'Мен сенің келісетініңді білгенмін 😍';
+        subtitle.innerHTML = `
+<span class="line"><b>Мекенжай:</b> Достык 106а;</span>
+<span class="line"><b>Сағат:</b> 19:00; Сені асыға күтемін ✨</span>
+`;
+
+        // Прячем кнопку «Жоқ»
+        noButton.style.transition = 'all 0.6s ease';
+        noButton.style.opacity = '0';
+        noButton.style.transform = 'scale(0.3)';
+
+        setTimeout(() => {
+          noButton.style.display = 'none';
+        }, 700);
+
+        // Увеличиваем карточку слегка
+        card.style.transform = 'scale(1.07)';
+        card.style.boxShadow = '0 30px 60px rgba(255, 80, 130, 0.45)';
+
+        // Взрыв сердечек
+        explodeHearts();
+
+        // Ускоряем падающие сердечки
+        setTimeout(() => {
+          setInterval(createHeart, 320);
+        }, 800);
+
+        // Дополнительные сердечки
+        for (let i = 0; i < 18; i++) {
+          setTimeout(createHeart, i * 70);
+        }
+      });
+
+      // Клик по «Жоқ» — плавное уменьшение
+      noButton.addEventListener('click', function () {
+        if (noClickCount >= maxNoClicks) return;
+
+        noClickCount++;
+
+        const progress = noClickCount / maxNoClicks;        // 0 → 1
+        const scaleNo = Math.max(0.08, 1 - progress * 1.05); // не даём исчезнуть полностью слишком резко
+        const opacityNo = Math.max(0.05, 1 - progress * 1.35);
+
+        // Плавное уменьшение кнопки «Жоқ» (вместе с текстом!)
+        noButton.style.transform = `scale(${scaleNo})`;
+        noButton.style.opacity = opacityNo;
+        noButton.style.transition = 'all 0.55s cubic-bezier(0.4, 0, 0.2, 1)';
+
+        // Увеличиваем кнопку «Иә», но только до maxYesScale
+        const currentYesScale = 1 + (maxYesScale - 1) * (noClickCount / maxNoClicks);
+        yesButton.style.transform = `scale(${Math.min(currentYesScale, maxYesScale)})`;
+        yesButton.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+        const shift = progress * 122; 
+yesButton.style.marginLeft = shift + 'px';
+
+        // Если почти исчезла — полностью скрываем
+        if (noClickCount >= maxNoClicks - 1) {
+          setTimeout(() => {
+            noButton.style.display = 'none';
+          }, 650);
+        }
+      });
     });
   </script>
 </body>
-
 </html>
-
-
