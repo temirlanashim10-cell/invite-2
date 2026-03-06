@@ -56,7 +56,7 @@
     }
 
     .photo-wrapper {
-      width: 300px;
+      width: 250px;
       height: 220px;
       margin: 0 auto 25px;
       border-radius: 50%;
@@ -81,11 +81,14 @@
     }
 
     .invite-content p {
-      font-size: 18px;
+      font-size: 19px;
       color: #555;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      text-align: left;
+      margin-left: 40px;
       line-height: 1.5;
     }
+
 
     .buttons-row {
       display: flex;
@@ -173,6 +176,7 @@
         opacity: 0;
       }
     }
+    
   </style>
 </head>
 <body>
@@ -272,10 +276,11 @@
         document.body.style.transition = 'background 1.3s ease';
 
         // Текст меняется
-        title.textContent = 'Мен сенің келісетініңді білгенмін 😍';
+        title.textContent = 'Мен сенің келісетініңді білгенмін 😍, сені асыға күтетін боламын✨';
         subtitle.innerHTML = `
-<span class="line"><b>Мекенжай:</b> Достык 106а;</span>
-<span class="line"><b>Сағат:</b> 19:00; Сені асыға күтемін ✨</span>
+        <br><span class="line"><b>Күні:</b> 7 наурыз</span><br>
+<span class="line"><b>Мекенжай:</b> Достык 106а</span><br>
+<span class="line"><b>Сағат:</b> 19:00</span>
 `;
 
         // Прячем кнопку «Жоқ»
